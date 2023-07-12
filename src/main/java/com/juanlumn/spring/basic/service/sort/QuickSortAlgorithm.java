@@ -1,10 +1,12 @@
 package com.juanlumn.spring.basic.service.sort;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 @Component
+@Qualifier("quick")
 public class QuickSortAlgorithm implements SortAlgorithm {
 
     @Override

@@ -10,8 +10,7 @@ The way you tell Spring that a class is a Bean is by adding the annotation `@Com
 
 * What are the dependencies of a Bean?
 
-A Java class has a dependency on another class, if it uses an instance of this class.<br />
-We call this a class dependency. We use the tag `@Autowired` to tell Spring that it's a dependency of the Bean.<br />
+A Java class has a dependency on another class, if it uses an instance of this class. We call this a class dependency. We use the tag `@Autowired` to tell Spring that it's a dependency of the Bean.<br />
 In our example `SortAlgorithm` is a dependency of `BinarySearchServiceImpl. 
 
 * Where to search for Beans?
@@ -19,10 +18,29 @@ In our example `SortAlgorithm` is a dependency of `BinarySearchServiceImpl.
 SpringBoot will automatically scan the packages and subpackages where the main application class is present.<br />
 So there is no need to define the component scan by default.
 
+* What is the Bean Scope?
+
+By default, the Bean scope is Singleton. There are 4 types:
+1. Singleton: One instance per Spring Context
+2. Prototype: New Bean when requested for it.
+3. Request: One Bean per HTTP request.
+4. Session: One Bean per HTTP session.
+To change the scope of a Bean you can set it by using the tag `@Scope`:
+```
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class BinarySearchServiceImpl implements BinarySearchService {
+
+    @Autowired
+    @Qualifier("quick")
+    private final SortAlgorithm sortAlgorithm;
+    ...
+}
+```
+
 * What happens if there are more than one dependency candidate for being Autowired?
 
-In the example we have `BubbleSortAlgorithm` and `QuickSortAlgorithm` which are annotated as `@Component` and both can<br /> 
-be injected as dependency in `BinarySearchServiceImpl` as both implements `SortAlgorithm`.
+In the example we have `BubbleSortAlgorithm` and `QuickSortAlgorithm` which are annotated as `@Component` and both can be injected as dependency in `BinarySearchServiceImpl` as both implements `SortAlgorithm`.
 <br />
 <br />
 We can face the error: 
@@ -37,7 +55,42 @@ Parameter 0 of constructor in com.juanlumn.spring.basic.service.binarysearch.Bin
 - bubbleSortAlgorithm: defined in file [/home/juan/IdeaProjects/basic/target/classes/com/juanlumn/spring/basic/service/sort/BubbleSortAlgorithm.class]
 - quickSortAlgorithm: defined in file [/home/juan/IdeaProjects/basic/target/classes/com/juanlumn/spring/basic/service/sort/QuickSortAlgorithm.class]
 ```
-To avoid this you can use the tag `@Primary` to give preference to one of the components among the others.
+To avoid this you can use the tag `@Primary` to give preference to one of the components among the others:
+```
+@Component
+@Primary
+public class BubbleSortAlgorithm implements SortAlgorithm {
+     ...
+}
+```
+Another option is to use `@Autowired` by name so Spring will look for a Component which matches the name provided, for example:
+```
+@Component
+public class BinarySearchServiceImpl implements BinarySearchService {
+
+    @Autowired
+    private SortAlgorithm quickSortAlgorithm;
+    ...
+}
+```
+Keep in mind that the tag `@Primary` has more priority than Autowire by name. So if there is a Component tagged as `@Primary` and the name provided is different the `@Primary` will be loaded instead.<br />
+We can also use the `@Qualifier` tag:
+```
+@Component
+@Qualifier("quick")
+public class QuickSortAlgorithm implements SortAlgorithm {
+    ...
+}
+
+@Component
+public class BinarySearchServiceImpl implements BinarySearchService {
+
+    @Autowired
+    @Qualifier("quick")
+    private final SortAlgorithm sortAlgorithm;
+    ...
+}
+```
 
 * How are the dependencies injected?
 
