@@ -16,7 +16,18 @@ In our example `SortAlgorithm` is a dependency of `BinarySearchServiceImpl.
 * Where to search for Beans?
 
 SpringBoot will automatically scan the packages and subpackages where the main application class is present.<br />
-So there is no need to define the component scan by default.
+So there is no need to define the component scan by default.<br />
+If you need Spring to search in a different package you can set it with the tag `@ComponentScan`:
+```
+@SpringBootApplication
+@ComponentScan("the.name.of.the.package")
+public class BasicApplication {
+
+	public static void main(String[] args) {
+		...
+	}
+}
+```
 
 * What is the Bean Scope?
 
