@@ -6,7 +6,11 @@ To understand this example we need to answer some questions:
 
 Beans are all the objects managed by Spring.<br />
 The way you tell Spring that a class is a Bean is by adding the annotation `@Component` at the top of the class.<br />
-(There are more annotations related, but we will keep the example simple)  
+The most common component annotations are:
+1. `@Component`: Generic Component.
+2. `@Repository`: Encapsulating storage, retrieval and search behaviour typically from a relational DB.
+3. `@Service`: Business Service Facade.
+4. `@Controler`: Controller in MVC pattern.
 
 * What are the dependencies of a Bean?
 
